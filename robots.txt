@@ -1,2 +1,25 @@
+# Link-preview crawlers must be allowed or WhatsApp/Messenger cards will not render.
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: facebookcatalog
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Slackbot-LinkExpanding
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+# Private client proposal: keep it out of search results.
 User-agent: *
 Disallow: /
