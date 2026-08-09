@@ -1420,18 +1420,28 @@ for (var s = 0; s < slides.length; s++) {
   })(s);
 }
 
+// On desktop the deck element scrolls; on narrow screens the document scrolls.
+// Measuring against the viewport works for both, so the counter always tracks.
 var scrollTimer = null;
-deck.addEventListener("scroll", function () {
+function syncCurrent() {
   if (scrollTimer) clearTimeout(scrollTimer);
   scrollTimer = setTimeout(function () {
-    var mid = deck.scrollTop + deck.clientHeight / 2;
-    var best = 0;
+    var mid = window.innerHeight / 2;
+    var best = 0, bestDist = Infinity;
     for (var i = 0; i < slides.length; i++) {
-      if (slides[i].offsetTop <= mid) best = i;
+      var r = slides[i].getBoundingClientRect();
+      if (r.top <= mid && r.bottom > 0) { best = i; bestDist = 0; }
+      else {
+        var d = Math.abs(r.top - mid);
+        if (bestDist !== 0 && d < bestDist) { bestDist = d; best = i; }
+      }
     }
     if (best !== current) { current = best; updateWhere(); }
   }, 90);
-});
+}
+deck.addEventListener("scroll", syncCurrent, { passive: true });
+window.addEventListener("scroll", syncCurrent, { passive: true });
+window.addEventListener("resize", syncCurrent);
 
 langBtn.onclick = function () { setLang(lang === "ar" ? "en" : "ar"); };
 document.getElementById("prevBtn").onclick = function () { goTo(current - 1); };
